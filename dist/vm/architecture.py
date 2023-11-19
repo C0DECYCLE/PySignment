@@ -15,6 +15,7 @@ OPS = {
     "prm": {"code": 0xB, "fmt": "r-"},  # Print memory
     "inc": {"code": 0xC, "fmt": "r-"},  # Increment
     "dec": {"code": 0xD, "fmt": "r-"},  # Decrement
+    "swp": {"code": 0xE, "fmt": "rr"},  # swap values
 }
 
 OP_MASK = 0xFF  # select a single byte

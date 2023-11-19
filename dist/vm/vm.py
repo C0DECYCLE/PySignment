@@ -90,6 +90,10 @@ class VirtualMachine:
                 self.reg[arg0] += 1
             elif op == OPS["dec"]["code"]:
                 self.reg[arg0] -= 1
+            elif op == OPS["swp"]["code"]:
+                temp = self.reg[arg0]
+                self.reg[arg0] = self.reg[arg1]
+                self.reg[arg1] = temp
             # [/skip]
             else:
                 assert False, f"Unknown op {op:06x}"
