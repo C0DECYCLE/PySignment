@@ -22,6 +22,8 @@ class VirtualMachineExtend(VirtualMachineStep):
             "s": self._do_step,
             "step": self._do_step,
         }
+        self.multiHandlers = ["m", "memory"]
+
     # [/init]
 
     # [interact]
@@ -31,15 +33,22 @@ class VirtualMachineExtend(VirtualMachineStep):
         while interacting:
             try:
                 command = self.read(f"{addr:06x} [{prompt}]> ")
-                if not command:
+                command = command.split()
+                if not command[0]:
                     continue
-                elif command not in self.handlers:
+                elif command[0] not in self.handlers:
                     self.write(f"Unknown command {command}")
+                elif command[0] in self.multiHandlers:
+                    args = None if len(command) == 1 else command[1:]
+                    interacting = self.handlers[command[0]](self.ip, args)
+                elif len(command) > 1:
+                    self.write(f"Command takes no arguments")
                 else:
-                    interacting = self.handlers[command](self.ip)
+                    interacting = self.handlers[command[0]](self.ip)
             except EOFError:
                 self.state = VMState.FINISHED
                 interacting = False
+
     # [/interact]
 
     def _do_disassemble(self, addr):
@@ -51,9 +60,10 @@ class VirtualMachineExtend(VirtualMachineStep):
         return True
 
     # [memory]
-    def _do_memory(self, addr):
-        self.show()
+    def _do_memory(self, addr, args=None):
+        self.show(args)
         return True
+
     # [/memory]
 
     def _do_quit(self, addr):
@@ -68,6 +78,7 @@ class VirtualMachineExtend(VirtualMachineStep):
     def _do_step(self, addr):
         self.state = VMState.STEPPING
         return False
+
     # [/step]
 
 

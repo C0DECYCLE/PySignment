@@ -17,13 +17,14 @@ class VirtualMachineBase:
         vm = cls()
         vm.initialize(program)
         vm.run()
-        vm.show()
+        vm.show(None)
 
     # [init]
     def __init__(self, writer=sys.stdout):
         """Set up memory."""
         self.writer = writer
         self.initialize([])
+
     # [/init]
 
     def initialize(self, program):
@@ -40,6 +41,7 @@ class VirtualMachineBase:
         while self.state != VMState.FINISHED:
             addr, op, arg0, arg1 = self.fetch()
             self.execute(op, arg0, arg1)
+
     # [/run]
 
     def fetch(self):
@@ -122,24 +124,32 @@ class VirtualMachineBase:
         else:
             assert False, f"Unknown op {op:06x}"
 
-    def show(self):
+    def show(self, args):
+        cols = COLUMNS
         """Show the IP, registers, and memory."""
         # Show IP and registers
         self.write(f"IP{' ' * 6}= {self.ip:06x}")
-        for (i, r) in enumerate(self.reg):
+        for i, r in enumerate(self.reg):
             self.write(f"R{i:06x} = {r:06x}")
 
         # How much memory to show
-        top = max(i for (i, m) in enumerate(self.ram) if m != 0)
+        if not args:
+            top = max(i for (i, m) in enumerate(self.ram) if m != 0)
+        elif len(args) == 2:
+            top = int(args[1])
+        elif len(args) == 1:
+            top = int(args[0])
+            cols = 1
 
-        # Show memory
-        base = 0
+        base = int(args[0]) if args else 0
         while base <= top:
             output = f"{base:06x}: "
-            for i in range(COLUMNS):
+            for i in range(cols):
+                if base + i > top:
+                    break
                 output += f"  {self.ram[base + i]:06x}"
             self.write(output)
-            base += COLUMNS
+            base += cols
 
     def assert_is_register(self, reg):
         assert 0 <= reg < len(self.reg), f"Invalid register {reg:06x}"
@@ -151,7 +161,9 @@ class VirtualMachineBase:
     def write(self, *args):
         msg = "".join(args) + "\n"
         self.writer.write(msg)
+
     # [/write]
+
 
 if __name__ == "__main__":
     VirtualMachineBase.main()
