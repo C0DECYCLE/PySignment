@@ -10,9 +10,7 @@ class VirtualMachineBreak(VirtualMachineExtend):
         super().__init__()
         self.breaks = {}
         self.handlers |= {
-            "b": self._do_add_breakpoint,
             "break": self._do_add_breakpoint,
-            "c": self._do_clear_breakpoint,
             "clear": self._do_clear_breakpoint,
         }
 
@@ -51,7 +49,8 @@ class VirtualMachineBreak(VirtualMachineExtend):
     # [/run]
 
     # [add]
-    def _do_add_breakpoint(self, addr):
+    def _do_add_breakpoint(self, addr, args):
+        addr = addr if not args else args
         if self.ram[addr] == OPS["brk"]["code"]:
             return
         self.breaks[addr] = self.ram[addr]
@@ -61,7 +60,8 @@ class VirtualMachineBreak(VirtualMachineExtend):
     # [/add]
 
     # [clear]
-    def _do_clear_breakpoint(self, addr):
+    def _do_clear_breakpoint(self, addr, args):
+        addr = addr if not args else args
         if self.ram[addr] != OPS["brk"]["code"]:
             return
         self.ram[addr] = self.breaks[addr]
