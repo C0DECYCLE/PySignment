@@ -10,20 +10,20 @@ class VirtualMachineBreak(VirtualMachineExtend):
         super().__init__()
         self.breaks = {}
         self.handlers |= {
-            "b": self._do_add_breakpoint,
             "break": self._do_add_breakpoint,
-            "c": self._do_clear_breakpoint,
             "clear": self._do_clear_breakpoint,
         }
+
     # [/init]
 
     # [show]
-    def show(self):
-        super().show()
+    def show(self, args):
+        super().show(args)
         if self.breaks:
             self.write("-" * 6)
             for key, instruction in self.breaks.items():
                 self.write(f"{key:06x}: {self.disassemble(key, instruction)}")
+
     # [/show]
 
     # [run]
@@ -45,24 +45,29 @@ class VirtualMachineBreak(VirtualMachineExtend):
                     self.interact(self.ip)
                 self.ip += 1
                 self.execute(op, arg0, arg1)
+
     # [/run]
 
     # [add]
-    def _do_add_breakpoint(self, addr):
+    def _do_add_breakpoint(self, addr, args):
+        addr = addr if not args else args
         if self.ram[addr] == OPS["brk"]["code"]:
             return
         self.breaks[addr] = self.ram[addr]
         self.ram[addr] = OPS["brk"]["code"]
         return True
+
     # [/add]
 
     # [clear]
-    def _do_clear_breakpoint(self, addr):
+    def _do_clear_breakpoint(self, addr, args):
+        addr = addr if not args else args
         if self.ram[addr] != OPS["brk"]["code"]:
             return
         self.ram[addr] = self.breaks[addr]
         del self.breaks[addr]
         return True
+
     # [/clear]
 
 
