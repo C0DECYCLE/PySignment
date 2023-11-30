@@ -16,7 +16,7 @@ class VirtualMachineExtend(VirtualMachineStep):
             "run": self._do_run,
             "step": self._do_step,
         }
-        self.multiHandlers = ["memory", "break", "clear", "watch"]
+        self.multiHandlers = ["memory", "break", "clear", "watch", "end"]
 
     # [/init]
 

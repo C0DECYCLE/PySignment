@@ -53,7 +53,6 @@ class VirtualMachineBreak(VirtualMachineExtend):
                 original = self.watch[self.ip]
                 op, arg0, arg1 = self.decode(original)
                 self.ip += 1
-
                 self.execute(op, arg0, arg1)
 
             elif op == OPS["str"]["code"]:
@@ -67,11 +66,15 @@ class VirtualMachineBreak(VirtualMachineExtend):
                     self.write(
                         f"Memory Adress: {self.reg[arg1]:06x} | old Value: {old} | new Value: {new}"
                     )
+                    self.watch[self.reg[arg1]] = new
                     self.interact(self.ip)
                     self.ip += 1
+                    self.execute(op, arg0, arg1)
                 else:
-                    self.ram[self.reg[arg1]] = self.reg[arg0]
+                    if self.state == VMState.STEPPING:
+                        self.interact(self.ip)
                     self.ip += 1
+                    self.execute(op, arg0, arg1)
 
             else:
                 if self.state == VMState.STEPPING:
