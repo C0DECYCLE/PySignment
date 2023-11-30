@@ -86,6 +86,8 @@ class VirtualMachineBreak(VirtualMachineExtend):
 
     # [add]
     def _do_add_breakpoint(self, addr, args):
+        if not self.ensure_length_interact(args, 1):
+            return
         addr = addr if not args else int(args[0])
         if self.ram[addr] == OPS["brk"]["code"]:
             return
@@ -97,6 +99,8 @@ class VirtualMachineBreak(VirtualMachineExtend):
 
     # [clear]
     def _do_clear_breakpoint(self, addr, args):
+        if not self.ensure_length_interact(args, 1):
+            return
         addr = addr if not args else int(args[0])
         if self.ram[addr] != OPS["brk"]["code"]:
             return
@@ -107,6 +111,8 @@ class VirtualMachineBreak(VirtualMachineExtend):
     # [/clear]
 
     def _do_add_watchpoint(self, addr, args):
+        if not self.ensure_length_interact(args, 1):
+            return
         addr = addr if not args else int(args[0])
         if self.ram[addr] == OPS["wap"]["code"]:
             return
@@ -115,11 +121,27 @@ class VirtualMachineBreak(VirtualMachineExtend):
         return True
 
     def _do_end_watchpoint(self, addr, args):
+        if not self.ensure_length_interact(args, 1):
+            return
         addr = addr if not args else int(args[0])
         if self.ram[addr] != OPS["wap"]["code"]:
             return
         self.ram[addr] = self.watch[addr]
         del self.watch[addr]
+
+    def ensure_length_interact(self, args, length):
+        if not args:
+            return True
+        if type(length) == tuple:
+            if len(args) not in length:
+                self.write(f"Arguments cannot exceed length {max(length)}")
+                self.interact(self.ip)
+                return False
+        elif len(args) != length:
+            self.write(f"Arguments cannot exceed length {length}")
+            self.interact(self.ip)
+            return False
+        return True
 
 
 if __name__ == "__main__":

@@ -65,6 +65,8 @@ class VirtualMachineExtend(VirtualMachineStep):
 
     # [memory]
     def _do_memory(self, addr, args=None):
+        if not self.ensure_length_interact(args, (1, 2)):
+            return
         self.show(args)
         return True
 
