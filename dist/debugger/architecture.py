@@ -14,6 +14,7 @@ OPS = {
     "prr": {"code": 10, "fmt": "r-"},  # Print register
     "prm": {"code": 11, "fmt": "r-"},  # Print memory
     "brk": {"code": 15, "fmt": "--"},  # Breakpoint
+    "wap": {"code": 16, "fmt": "--"},  # Watchpoint
 }
 
 OP_MASK = 0xFF  # select a single byte
@@ -23,10 +24,14 @@ OP_WIDTH = 6  # op width in characters when printing
 NUM_REG = 4  # number of registers
 RAM_LEN = 256  # number of words in RAM
 
+
 # [state]
 class VMState(Enum):
     """Virtual machine states."""
+
     FINISHED = 0
     STEPPING = 1
     RUNNING = 2
+
+
 # [/state]

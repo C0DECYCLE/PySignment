@@ -82,12 +82,6 @@ class VirtualMachineBase:
             self.assert_is_register(arg1)
             self.reg[arg0] = self.reg[arg1]
 
-        elif op == OPS["str"]["code"]:
-            self.assert_is_register(arg0)
-            self.assert_is_register(arg1)
-            self.assert_is_address(self.reg[arg1])
-            self.ram[self.reg[arg1]] = self.reg[arg0]
-
         elif op == OPS["add"]["code"]:
             self.assert_is_register(arg0)
             self.assert_is_register(arg1)
@@ -109,6 +103,12 @@ class VirtualMachineBase:
             self.assert_is_address(arg1)
             if self.reg[arg0] != 0:
                 self.ip = arg1
+
+        elif op == OPS["str"]["code"]:
+            self.assert_is_register(arg0)
+            self.assert_is_register(arg1)
+            self.assert_is_address(self.reg[arg1])
+            self.ram[self.reg[arg1]] = self.reg[arg0]
 
         # [prr]
         elif op == OPS["prr"]["code"]:

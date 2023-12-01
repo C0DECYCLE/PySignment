@@ -16,7 +16,7 @@ class VirtualMachineExtend(VirtualMachineStep):
             "run": self._do_run,
             "step": self._do_step,
         }
-        self.multiHandlers = ["memory", "break", "clear"]
+        self.multiHandlers = ["memory", "break", "clear", "watch", "end"]
 
     # [/init]
 
@@ -65,6 +65,8 @@ class VirtualMachineExtend(VirtualMachineStep):
 
     # [memory]
     def _do_memory(self, addr, args=None):
+        if not self.ensure_length_interact(args, (1, 2)):
+            return
         self.show(args)
         return True
 
