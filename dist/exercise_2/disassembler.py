@@ -12,7 +12,9 @@ class Disassembler:
         instructions = [int(ln, 16) for ln in lines]
         codeOPS = self._reverse_OPS()
         labels = []
-        decompiled = [self._decompile(instr, codeOPS, labels) for instr in instructions]
+        decompiled = [
+            self._decompile(instr, codeOPS, labels).strip() for instr in instructions
+        ]
         program = self._insert_labels(decompiled, labels)
         return program
 
