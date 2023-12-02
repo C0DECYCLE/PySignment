@@ -1,5 +1,4 @@
 ldc R1 15
-ldr R1 R2
 ldc R2 8
 swp R1 R2
 dec R1

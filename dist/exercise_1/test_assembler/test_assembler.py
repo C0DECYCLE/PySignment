@@ -46,7 +46,7 @@ def testAddBranch(monkeypatch, setupTeardown, sharedFile):
     teardown()
 
 
-def testCountPrint(monkeypatch, setupTeardown, sharedFile):
+def testCopyPrint(monkeypatch, setupTeardown, sharedFile):
     setup, teardown = setupTeardown
     inputFile = "as_files/copy_and_print.as"
     outputFile = "mx_files/copy_and_print.mx"
@@ -62,7 +62,7 @@ def testSwapSubtract(monkeypatch, setupTeardown, sharedFile):
     setup, teardown = setupTeardown
     inputFile = "as_files/swap_subtract_decrement.as"
     outputFile = "mx_files/swap_subtract_decrement.mx"
-    expectedOutput = "0f0102\n020103\n080202\n02010e\n00010d\n00020d\n020107\n020105\n00010a\n00020b\n000001\n"
+    expectedOutput = "0f0102\n080202\n02010e\n00010d\n00020d\n020107\n020105\n00010a\n00020b\n000001\n"
     setup(expectedOutput)
     monkeypatch.setattr("sys.argv", ["assembler.py", inputFile, str(outputFile)])
     main(Assembler)
