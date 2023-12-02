@@ -1,17 +1,13 @@
-# Assignment 3
+# PySignment
 
-This is our solution for Assignment 3 of SoCo at UZH HS 2023.  
+>This is our solution for Assignment 3 of SoCo at UZH HS 2023.  
 https://github.com/C0DECYCLE/PySignment.git
 
 ### Exercise 1: Unit Testing
 #### General
-To insure easy usage of the tests, the tests can be run while beeing in the exercise 1 directory and using the command "pytest".
-This was done by this code: "sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../vm/")", which is in relative instead of
-accessing a folder through concrete path. This allows every user to easily run the tests.
-
-Use "pytest -v" to get more details of the specific tests themselves.
-
-To see the test coverage, enter "coverage run -m pytest @CODECYCLE RIGHT COMMAND?".
+To insure easy usage of the tests, the tests can be run while being in the exercise 1 & 2 directory and using the command `coverage run -m pytest`.
+This was done by this line: `sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../vm/")`, which adds the path to the vm to the paths where the python interpreter looks for the needed modules.
+This allows every user to easily run the tests and avoid having to copy the vm files to the exercise 1 / 2 directory which would undermine **TDD**.
 
 #### 1A Test Assembler
 Five simple assembly programs are written to test all the operations. The tests contain the expected output, which was calculated by hand. The test work via file comparison.
@@ -24,15 +20,55 @@ The five produced .mx files get tested with the vm, where the output gets compar
 The command "capsys.readouterr().out" to get the terminal output for further comparison. This makes setup and teardown redundant for these tests, improving 
 scalability and performance.
 
+#### 1C Test Error
+The two specific errors get tested by trying to run manipulated input files and catch the assert error and compare it to the corresponding expected error which gets manually calculated.
+The out of memory error runs a corrupted assembly file through the arrays.py assembler. 
+The unknown operation error gets caught with corrupted .mx file which runs through the vm.
 
-#### 1C Test VM Error
-@C0DECYCLE
+> In addition to get as much test coverage as possible we wrote additional tests for the "arrays.py" DataAllocator. Found in the "test_arrays.py".
 
 #### 1D Test Coverage
-@?
+We ran the tests via the **"pytest-cov"** package using the `coverage run -m pytest` command inside the exercise 1 and 2 folder respectively.
+To view those test coverages we used the command `coverage report -m` which outputed the following line coverages.
+
+```
+Exercise 1
+Name                    Stmts   Miss  Cover   Missing
+-------------------------------------------------------
+../vm/architecture.py       6      0   100%
+../vm/arrays.py            40      3    92%   35-36, 56
+../vm/assembler.py         80      1    99%   122
+../vm/vm.py                82      1    99%   117
+test_arrays.py             32      0   100%
+test_assembler.py          51      0   100%
+test_errors.py             22      0   100%
+test_vm.py                 29      0   100%
+-------------------------------------------------------
+TOTAL                     342      5    99%
+```
+
+```
+Exercise 2
+Name                    Stmts   Miss  Cover   Missing
+-------------------------------------------------------
+../vm/architecture.py       6      0   100%
+disassembler.py            71      2    97%   58, 90
+test_disassembler.py       48      0   100%
+-------------------------------------------------------
+TOTAL                     125      2    98%
+
+```
+
+> The lines which are missing are the `if __name__ == "__main__":` ones. Everything else is covered.
 
 ### Exercise 2: Disassembler
-@C0DECYCLE
+The disassembler reverses the assembler output (.mx) back into its original input (.as) as closely as possible.
+It does this mainly by converting the hexadecimal codes, reversing the operation mapping dictionary and looking up the corresping operation names and masks.
+
+Some information gets **lost in translation**, whilst the assembly process, like label names. 
+Those get automatically substituted with generated "L001", "L002", etc. labels.
+
+The disassembler gets tested in a similar fashion to the assembler. The assembler outputted .mx files get read as input and checked if the output of the disassembler (.as) is matching the original input in as identical as possible form.
 
 ### Exercise 3: New features and Problems - Assembler
 #### 3.1 Increment and Decrement
@@ -64,7 +100,7 @@ These registers were denoted in the code with "temp".
 To be able to take multiple arguments a new attribute «multihandlers» is created. 
 All the commands contained in this array can take multiple arguments. This makes it easier to later add more multihandlers.
 
-The ensure_length_interact makes sure that the user inputs the right number of arguments. If they fail to do so, the VM doesn’t crash. 
+The ensure_length_interact makes sure that the user inputs the right number of arguments. If they fail to do so, the VM doesn't crash. 
 They stay in the interactive shell and get a message on what they did wrong.
 
 The memory command now takes up to two arguments. The Interact method in the vm_extend.py converts the arguments to a list. 
