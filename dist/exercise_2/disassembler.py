@@ -1,5 +1,9 @@
 import sys
-from dist.vm.architecture import OP_MASK, OP_SHIFT, OPS
+import os
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../vm/")
+
+from architecture import OP_MASK, OP_SHIFT, OPS
 
 
 class Disassembler:
