@@ -4,28 +4,16 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../vm/")
 
 from vm import main, VirtualMachine
-import pytest
 
 
-@pytest.fixture
-def setupTeardown(sharedFile):
-    def setup(content):
-        pass
-
-    def teardown():
-        pass
-
-    return setup, teardown
+def fileTesting(monkeypatch, capsys, inputFile, expectedOutput):
+    monkeypatch.setattr("sys.argv", ["vm.py", inputFile, "-"])
+    main(VirtualMachine)
+    actualOutput = capsys.readouterr().out
+    assert actualOutput == expectedOutput
 
 
-@pytest.fixture
-def sharedFile(tmp_path):
-    file_path = tmp_path / "expected.mx"
-    return str(file_path)
-
-
-def testCountVM(monkeypatch, setupTeardown, sharedFile, capsys):
-    setup, teardown = setupTeardown
+def testCountVM(monkeypatch, capsys):
     inputFile = "mx_files/count.mx"
     expectedOutput = """>> 5
 R000000 = 000000
@@ -35,19 +23,10 @@ R000003 = 000005
 000000:   050102  070202  010306  00030a
 000004:   000001  000000  000000  000000
 """
-
-    setup(expectedOutput)
-    monkeypatch.setattr("sys.argv", ["vm.py", inputFile, "-"])
-
-    main(VirtualMachine)
-    acutalOutput = capsys.readouterr().out
-
-    assert acutalOutput == expectedOutput
-    teardown()
+    fileTesting(monkeypatch, capsys, inputFile, expectedOutput)
 
 
-def testAddBranchVM(monkeypatch, setupTeardown, sharedFile, capsys):
-    setup, teardown = setupTeardown
+def testAddBranchVM(monkeypatch, capsys):
     inputFile = "mx_files/add_and_branch.mx"
     expectedOutput = """R000000 = 000000
 R000001 = 000001
@@ -56,19 +35,23 @@ R000003 = 000000
 000000:   050102  020103  070202  020106
 000004:   010108  010102  000001  000000
 """
-
-    setup(expectedOutput)
-    monkeypatch.setattr("sys.argv", ["vm.py", inputFile, "-"])
-
-    main(VirtualMachine)
-    acutalOutput = capsys.readouterr().out
-
-    assert acutalOutput == expectedOutput
-    teardown()
+    fileTesting(monkeypatch, capsys, inputFile, expectedOutput)
 
 
-def testCopyPrintVM(monkeypatch, setupTeardown, sharedFile, capsys):
-    setup, teardown = setupTeardown
+def testBranchNotEqualVM(monkeypatch, capsys):
+    inputFile = "mx_files/branch_not_equal.mx"
+    expectedOutput = """R000000 = 000000
+R000001 = -00001
+R000002 = 000000
+R000003 = 000000
+000000:   050002  00000c  00000d  00000d
+000004:   010009  010102  00010d  060108
+000008:   000001  000000  000000  000000
+"""
+    fileTesting(monkeypatch, capsys, inputFile, expectedOutput)
+
+
+def testCopyPrintVM(monkeypatch, capsys):
     inputFile = "mx_files/copy_and_print.mx"
     expectedOutput = """>> 0
 R000000 = 000000
@@ -77,19 +60,10 @@ R000002 = 000000
 R000003 = 000000
 000000:   0a0102  020104  00020a  000001
 """
-
-    setup(expectedOutput)
-    monkeypatch.setattr("sys.argv", ["vm.py", inputFile, "-"])
-
-    main(VirtualMachine)
-    acutalOutput = capsys.readouterr().out
-
-    assert acutalOutput == expectedOutput
-    teardown()
+    fileTesting(monkeypatch, capsys, inputFile, expectedOutput)
 
 
-def testSwapSubtractVM(monkeypatch, setupTeardown, sharedFile, capsys):
-    setup, teardown = setupTeardown
+def testSwapSubtractVM(monkeypatch, capsys):
     inputFile = "mx_files/swap_subtract_decrement.mx"
     expectedOutput = """>> -7
 >> -7
@@ -102,12 +76,4 @@ R000003 = 000000
 000008:   00020b  000001  000000  000000
 00000c:   000000  000000  -00007  000000
 """
-
-    setup(expectedOutput)
-    monkeypatch.setattr("sys.argv", ["vm.py", inputFile, "-"])
-
-    main(VirtualMachine)
-    acutalOutput = capsys.readouterr().out
-
-    assert acutalOutput == expectedOutput
-    teardown()
+    fileTesting(monkeypatch, capsys, inputFile, expectedOutput)
