@@ -1,6 +1,6 @@
 # PySignment
 
->This is our solution for Assignment 3 of SoCo at UZH HS 2023.  
+>Our solution for Assignment 3 of SoCo at UZH HS 2023.  
 https://github.com/C0DECYCLE/PySignment.git
 
 ### Exercise 1: Unit Testing
