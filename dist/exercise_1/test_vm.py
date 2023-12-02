@@ -1,5 +1,9 @@
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../vm/")
+
 from vm import main, VirtualMachine
-import filecmp
 import pytest
 
 
@@ -10,6 +14,7 @@ def setupTeardown(sharedFile):
 
     def teardown():
         pass
+
     return setup, teardown
 
 
@@ -39,6 +44,7 @@ R000003 = 000005
 
     assert acutalOutput == expectedOutput
     teardown()
+
 
 def testAddBranchVM(monkeypatch, setupTeardown, sharedFile, capsys):
     setup, teardown = setupTeardown
@@ -81,6 +87,7 @@ R000003 = 000000
     assert acutalOutput == expectedOutput
     teardown()
 
+
 def testSwapSubtractVM(monkeypatch, setupTeardown, sharedFile, capsys):
     setup, teardown = setupTeardown
     inputFile = "mx_files/swap_subtract_decrement.mx"
@@ -104,4 +111,3 @@ R000003 = 000000
 
     assert acutalOutput == expectedOutput
     teardown()
-
