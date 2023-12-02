@@ -4,14 +4,26 @@ This is our solution for Assignment 3 of SoCo at UZH HS 2023.
 https://github.com/C0DECYCLE/PySignment.git
 
 ### Exercise 1: Unit Testing
+#### General
+To insure easy usage of the tests, the tests can be run while beeing in the exercise 1 directory and using the command "pytest".
+This was done by this code: "sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../vm/")", which is in relative instead of
+accessing a folder through concrete path. This allows every user to easily run the tests.
+
+Use "pytest -v" to get more details of the specific tests themselves.
+
+To see the test coverage, enter "coverage run -m pytest @CODECYCLE RIGHT COMMAND?".
+
 #### 1A Test Assembler
-Four simple assembly programs are written to test all the operations. The tests contain the expected output, which was calculated by hand. The test work via file comparison.
+Five simple assembly programs are written to test all the operations. The tests contain the expected output, which was calculated by hand. The test work via file comparison.
 Instead of opening a new File for each test the tests the expected output gets written to a shared temporary file in the setup in the assert the contents are compared and in the end the temporary file gets emptied so it can be used for the next test. 
 The file creation seems obsolete (which it is), because the test could read the output file and then compare the strings, but we wanted to play around with fixtures, file comparison, setup and teardown.
-The translated files get saved to the mx_file directory for exercise 2.1.
+The translated files get saved to the mx_files directory for exercise 1B
 
 #### 1B Test Virtual Machine
-@Patertuck
+The five produced .mx files get tested with the vm, where the output gets compared to the before, by hand calculated result.
+The command "capsys.readouterr().out" to get the terminal output for further comparison. This makes setup and teardown redundant for these tests, improving 
+scalability and performance.
+
 
 #### 1C Test VM Error
 @C0DECYCLE
@@ -24,13 +36,28 @@ The translated files get saved to the mx_file directory for exercise 2.1.
 
 ### Exercise 3: New features and Problems - Assembler
 #### 3.1 Increment and Decrement
-@Patertuck
+A simple implementation, where the command just had to be added to the architecture, assembler and vm.
+Just simply increase or decrease the current value by 1.
 
 #### 3.2 Swap values
-@Patertuck
+Same as in 3.1, a simple where the command just had to be added to the architecture, assembler and vm.
+Just simply swap the values of the two registers.
 
 #### 3.3 Reverse array in place
-@Patertuck
+To make the reverse array file easier to read, many comments were added, explaining what different registers represent.
+The reversing of the array was accomplished through the following steps:
+1. Add length of array.
+2. Add numbers to array.
+3. "Pointer" at start and end of array.
+4. Loop through array, where numbers gets swapped at "pointers".
+5. End loop if pointers same index or right < left
+
+Step 5 for uneven array was easier to implement, as one can just subtract right from left, stopping the loop if 0.
+For uneven there had to be an extra check before, where if right - left + 1 results in zero, the loop would need to stop.
+For this the "loopend" was created.
+
+At all times in the code, two registers had to be "free", as they were needed to swap the values of the array.
+These registers were denoted in the code with "temp".
 
 ### Exercise 4: Debugger
 #### 4.1 Show Memory range
