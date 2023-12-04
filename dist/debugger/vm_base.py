@@ -136,12 +136,12 @@ class VirtualMachineBase:
         if not args:
             top = max(i for (i, m) in enumerate(self.ram) if m != 0)
         elif len(args) == 2:
-            top = int(args[1])
+            top = max(int(arg) for arg in args)
         elif len(args) == 1:
             top = int(args[0])
             cols = 1
 
-        base = int(args[0]) if args else 0
+        base = min(int(arg) for arg in args) if args else 0
         while base <= top:
             output = f"{base:06x}: "
             for i in range(cols):
